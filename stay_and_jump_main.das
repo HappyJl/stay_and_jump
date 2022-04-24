@@ -4,6 +4,7 @@ let
     CUBE_COLOR      = 0xFF3F70
     GROUND_COLOR    = 0x504022
     SKY_COLOR       = 0xB0E0FF
+    JUMP_VELOCITY = 870
 
 struct Cube
     position: float2
@@ -25,9 +26,7 @@ def reset_cube(var c: Cube)
 
 def update_cube(var c: Cube; dt: float)
     c.position = c.position + c.velocity * dt
-    c.velocity.y += 870.0 * dt
-    if c.position.y < 0.0
-        c.velocity.y = 500.0
+    c.velocity.y += float(JUMP_VELOCITY) * dt
     if c.position.y > float(get_screen_height()) / 1.08
         c.position.y = float(get_screen_height()) / 1.08
 
@@ -60,7 +59,7 @@ def update_input(var c: Cube)
     if pos == float(get_screen_height()) / 1.08
         if jump && !jump_pressed
             jump_cube(cube)    
-
+    
 
 def update_gameplay(dt: float)
     update_cube(cube, dt)
