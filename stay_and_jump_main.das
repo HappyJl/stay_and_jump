@@ -27,14 +27,12 @@ def update_cube(var c: Cube; dt: float)
     c.position = c.position + c.velocity * dt
     c.velocity.y += 870.0 * dt
     if c.position.y < 0.0
-        c.velocity.y = 50.0
-    if c.position.y > float(get_screen_height()) - 50.0
-        c.position.y = float(get_screen_height()) - 50.0
-
+        c.velocity.y = 500.0
+    if c.position.y > float(get_screen_height()) / 1.08
+        c.position.y = float(get_screen_height()) / 1.08
 
 def jump_cube(var c: Cube)
-    if c.alive
-        c.velocity.y = clamp(c.velocity.y - 600.0, -1200.0, -300.0)
+    c.velocity.y = clamp(c.velocity.y - 600.0, -600.0, -600.0)
 
 
 def render_cube(var c: Cube)
@@ -50,25 +48,18 @@ def render_background(t: float)
 def render_ground()
     fill_rect(0, get_screen_height() - 50, get_screen_width(), 200, GROUND_COLOR)
 
-
-def reset_game()
-    reset_cube(cube)
-
-
 [export]
 def initialize
     set_window_title("jump and stay")
-    reset_game()
+    reset_cube(cube)
 
 
-def update_input()
+def update_input(var c: Cube)
     let jump = get_key(VK_SPACE)
-    if jump && !jump_pressed
-        if cube.alive
-            jump_cube(cube)
-        else
-            reset_game()
-    jump_pressed = jump
+    let pos = c.position.y
+    if pos == float(get_screen_height()) / 1.08
+        if jump && !jump_pressed
+            jump_cube(cube)    
 
 
 def update_gameplay(dt: float)
@@ -80,13 +71,13 @@ def act(dt: float)
     // print("act dt={dt}\n")
     if get_key(VK_ESCAPE)
         schedule_quit_game()
-    update_input()
+    update_input(cube)
     update_gameplay(dt)
 
 
 [export]
 def draw()
-    render_background(camera_x * 0.4)
+    render_background(camera_x)
     render_ground()
     render_cube(cube)
 
